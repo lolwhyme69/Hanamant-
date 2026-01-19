@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kidney Stone Detection System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #ffffff;
+        }
+
+        header {
+            padding: 30px;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.4rem;
+        }
+
+        header p {
+            opacity: 0.85;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 30px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        h2 {
+            color: #6dd5fa;
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin: 12px 0 5px;
+            font-weight: 500;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            outline: none;
+            font-size: 1rem;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px;
+            width: 100%;
+            border-radius: 10px;
+            border: none;
+            background: linear-gradient(135deg, #56ccf2, #2f80ed);
+            color: #000;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Kidney Stone Detection System</h1>
+    <p>Early identification based on symptoms and risk indicators</p>
+</header>
+
+<div class="container">
+
+    <div class="card">
+        <h2>Problem Statement</h2>
+        <p>
+            Kidney stones are solid mineral and salt deposits that form in the kidneys and can cause severe pain,
+            urinary issues, and long-term complications if not detected early.
+            Many individuals ignore early symptoms, leading to delayed diagnosis and treatment.
+            This system helps users assess the likelihood of kidney stones using common clinical indicators.
+        </p>
+    </div>
+
+    <div class="card">
+        <h2>Detection Input</h2>
+
+        <label>Age</label>
+        <input type="number" id="age">
+
+        <label>Gender</label>
+        <select id="gender">
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+        </select>
+
+        <label>Severe Lower Back or Side Pain</label>
+        <select id="pain">
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+        </select>
+
+        <label>Blood in Urine</label>
+        <select id="blood">
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+        </select>
+
+        <label>Nausea or Vomiting</label>
+        <select id="nausea">
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+        </select>
+
+        <label>Burning Sensation While Urinating</label>
+        <select id="burning">
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+        </select>
+
+        <button onclick="detectStone()">Analyze</button>
+
+        <div id="result" class="result"></div>
+    </div>
+
+    <div class="card">
+        <h2>Prevention & Awareness</h2>
+        <div class="info-grid">
+            <p>✔ Drink sufficient water daily</p>
+            <p>✔ Reduce excess salt intake</p>
+            <p>✔ Avoid high oxalate foods if prone</p>
+            <p>✔ Maintain healthy body weight</p>
+            <p>✔ Seek medical advice for persistent pain</p>
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    This tool is for educational purposes only and does not replace professional medical diagnosis.
+</footer>
+
+<script>
+    function detectStone() {
+        let score = 0;
+
+        if (document.getElementById("pain").value === "yes") score += 3;
+        if (document.getElementById("blood").value === "yes") score += 3;
+        if (document.getElementById("nausea").value === "yes") score += 2;
+        if (document.getElementById("burning").value === "yes") score += 2;
+
+        let resultText = "";
+
+        if (score >= 7) {
+            resultText = "High probability of kidney stones. Immediate medical consultation is strongly recommended.";
+        } else if (score >= 4) {
+            resultText = "Moderate risk detected. Medical evaluation and diagnostic imaging are advised.";
+        } else {
+            resultText = "Low probability based on provided inputs. Maintain hydration and monitor symptoms.";
+        }
+
+        document.getElementById("result").innerText = resultText;
+    }
+</script>
+
+</body>
+</html>
