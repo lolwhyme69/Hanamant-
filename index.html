@@ -1,1 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kidney Stone Detection App</title>
+
+<!-- Fonts + Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+
+/* Global & Layout */
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg,#2c5364,#203a43,#0f2027);
+    color: #fff;
+    overflow-x: hidden;
+}
+.container {
+    max-width: 1000px;
+    margin: auto;
+    padding: 20px;
+}
+
+/* Header */
+header {
+    text-align: center;
+    padding: 60px 20px;
+}
+header h1 {
+    font-size: 3rem;
+    margin: 0;
+    letter-spacing: 1px;
+    font-weight: 700;
+}
+header p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+/* Form Card */
+.card {
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(10px);
+    border-radius: 18px;
+    padding: 25px;
+    margin: 30px 0;
+    box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.35);
+    transition: transform 0.3s ease;
+}
+.card:hover {
+    transform: scale(1.02);
+}
+
+/* Form Fields */
+label {
+    display: block;
+    margin: 14px 0 6px;
+    font-weight: 600;
+}
+input[type=number], select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    font-size: 1rem;
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    outline: none;
+    box-shadow: inset 2px 2px 10px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+}
+input:focus, select:focus {
+    background: rgba(255,255,255,0.25);
+}
+
+/* Button Style */
+.btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    cursor: pointer;
+    font-size: 1.15rem;
+    font-weight: 700;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #56ccf2, #2f80ed);
+    color: #000;
+    margin-top: 20px;
+    transition: 0.3s ease;
+}
+.btn:hover {
+    opacity: 0.9;
+}
+
+/* Progress Bar */
+.progress-bar {
+    height: 18px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    margin-top: 20px;
+    overflow: hidden;
+}
+.progress {
+    width: 0%;
+    height: 100%;
+    background: #56ccf2;
+    transition: width 0.5s ease;
+}
+
+/* Result Box */
+.result-box {
+    margin-top: 25px;
+    padding: 18px;
+    border-radius: 12px;
+    background: rgba(0,0,0,0.4);
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Icons Grid */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
+    gap: 18px;
+    margin-top: 25px;
+}
+.info-card {
+    background: rgba(255,255,255,0.1);
+    padding: 18px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    transition: 0.3s ease;
+}
+.info-card:hover {
+    transform: scale(1.04);
+}
+.info-card svg {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 12px;
+    fill: #56ccf2;
+}
+.info-card p {
+    margin: 8px 0 0;
+    font-size: 0.98rem;
+    font-weight: 500;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>Kidney Stone Detection</h1>
+    <p>Smart symptom analyzer for early detection of kidney stone likelihood</p>
+</header>
+
+<div class="container">
+
+    <div class="card">
+        <h2>Tell Us Your Symptoms</h2>
+        <label>Age</label>
+        <input type="number" id="age" placeholder="Enter your age">
+
+        <label>Gender</label>
+        <select id="gender">
+            <option value="">Select Gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+        </select>
+
+        <label>Severe Back or Side Pain?</label>
+        <select id="pain">
+            <option value="">Select</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+        </select>
+
+        <label>Blood in Urine?</label>
+        <select id="blood">
+            <option value="">Select</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+        </select>
+
+        <label>Nausea or Vomiting?</label>
+        <select id="nausea">
+            <option value="">Select</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+        </select>
+
+        <label>Burning Sensation While Urinating?</label>
+        <select id="burning">
+            <option value="">Select</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+        </select>
+
+        <button class="btn" onclick="runDetection()">Analyze Now</button>
+
+        <div class="progress-bar">
+            <div id="progress" class="progress"></div>
+        </div>
+
+        <div id="resultText" class="result-box"></div>
+    </div>
+
+
+    <div class="card">
+        <h2>Tips & Prevention</h2>
+        <div class="info-grid">
+            <div class="info-card">
+                <svg viewBox="0 0 24 24">
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2
+                  5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5
+                  2.09C13.09 3.81 14.76 3 16.5 3 19.58
+                  3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55
+                  11.54L12 21.35z"/>
+                </svg>
+                <p>Stay Hydrated Regularly</p>
+            </div>
+            <div class="info-card">
+                <svg viewBox="0 0 24 24">
+                  <path d="M3 3h18v2H3zm2 16h14v2H5zm-2-8h18v2H3z"/>
+                </svg>
+                <p>Reduce Salt & Oxalate Foods</p>
+            </div>
+            <div class="info-card">
+                <svg viewBox="0 0 24 24">
+                  <path d="M12 2l1.5
+                  4.5h4.5l-3.75 2.75 1.5 4.5L12
+                  11.5l-3.75 2.75 1.5-4.5L5.25
+                  6.5h4.5z"/>
+                </svg>
+                <p>Maintain Healthy Lifestyle</p>
+            </div>
+            <div class="info-card">
+                <svg viewBox="0 0 24 24">
+                  <path d="M12 2L1 21h22L12
+                  2zm1 14.5h-2V17h2v-0.5zM11
+                  7h2v6h-2z"/>
+                </svg>
+                <p>See Doctor If Severe Pain</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+function runDetection() {
+    const progress = document.getElementById("progress");
+    const resultText = document.getElementById("resultText");
+    resultText.innerText = "";
+    progress.style.width = "0%";
+
+    let age = document.getElementById("age").value;
+    let pain = document.getElementById("pain").value;
+    let blood = document.getElementById("blood").value;
+    let nausea = document.getElementById("nausea").value;
+    let burning = document.getElementById("burning").value;
+
+    if (!age || !pain || !blood || !nausea || !burning) {
+        resultText.innerText = "Please fill all fields.";
+        return;
+    }
+
+    let score = 0;
+    if (pain === "yes") score += 3;
+    if (blood === "yes") score += 3;
+    if (nausea === "yes") score += 2;
+    if (burning === "yes") score += 2;
+    if (age > 40) score += 1;
+
+    let percentage = Math.min(score*10, 100);
+    progress.style.width = percentage + "%";
+
+    setTimeout(() => {
+        if (score >= 8) {
+            resultText.innerText = "High chance of kidney stones detected. Immediate medical consultation advised.";
+        } else if (score >= 5) {
+            resultText.innerText = "Moderate risk of kidney stones. Consider clinical evaluation.";
+        } else {
+            resultText.innerText = "Low probable risk. Maintain hydration and monitor symptoms.";
+        }
+    }, 500);
+
+}
+</script>
+
+</body>
+</html>
+```1
