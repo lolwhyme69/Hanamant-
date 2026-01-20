@@ -1,302 +1,340 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kidney Stone Detection App</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kidney Health & Symptom Checker</title>
+    <style>
+        /* DESIGN & STYLING 
+           Using a 'considerate' color palette: Soothing Blues and Soft Grays.
+           Designed to be high-contrast and easy to read.
+        */
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-sub: #64748b;
+            --danger: #ef4444;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
 
-<!-- Fonts + Icons -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-<style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
 
-/* Global & Layout */
-body, html {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    font-family: 'Inter', sans-serif;
-    background: linear-gradient(135deg,#2c5364,#203a43,#0f2027);
-    color: #fff;
-    overflow-x: hidden;
-}
-.container {
-    max-width: 1000px;
-    margin: auto;
-    padding: 20px;
-}
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
 
-/* Header */
-header {
-    text-align: center;
-    padding: 60px 20px;
-}
-header h1 {
-    font-size: 3rem;
-    margin: 0;
-    letter-spacing: 1px;
-    font-weight: 700;
-}
-header p {
-    font-size: 1.1rem;
-    opacity: 0.9;
-}
+        h1 {
+            color: var(--primary);
+            margin-top: 0;
+            font-size: 1.8rem;
+            text-align: center;
+        }
 
-/* Form Card */
-.card {
-    background: rgba(255, 255, 255, 0.12);
-    backdrop-filter: blur(10px);
-    border-radius: 18px;
-    padding: 25px;
-    margin: 30px 0;
-    box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.35);
-    transition: transform 0.3s ease;
-}
-.card:hover {
-    transform: scale(1.02);
-}
+        .disclaimer {
+            background-color: #eff6ff;
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            margin-bottom: 30px;
+            border-radius: 4px;
+        }
 
-/* Form Fields */
-label {
-    display: block;
-    margin: 14px 0 6px;
-    font-weight: 600;
-}
-input[type=number], select {
-    width: 100%;
-    padding: 12px;
-    border-radius: 10px;
-    border: none;
-    font-size: 1rem;
-    background: rgba(255,255,255,0.15);
-    color: #fff;
-    outline: none;
-    box-shadow: inset 2px 2px 10px rgba(0,0,0,0.2);
-    transition: all 0.3s ease;
-}
-input:focus, select:focus {
-    background: rgba(255,255,255,0.25);
-}
+        .question-step {
+            display: none; /* Hidden by default, JS reveals active step */
+            animation: fadeIn 0.4s ease;
+        }
 
-/* Button Style */
-.btn {
-    width: 100%;
-    padding: 14px;
-    border: none;
-    cursor: pointer;
-    font-size: 1.15rem;
-    font-weight: 700;
-    border-radius: 12px;
-    background: linear-gradient(135deg, #56ccf2, #2f80ed);
-    color: #000;
-    margin-top: 20px;
-    transition: 0.3s ease;
-}
-.btn:hover {
-    opacity: 0.9;
-}
+        .question-step.active {
+            display: block;
+        }
 
-/* Progress Bar */
-.progress-bar {
-    height: 18px;
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.2);
-    margin-top: 20px;
-    overflow: hidden;
-}
-.progress {
-    width: 0%;
-    height: 100%;
-    background: #56ccf2;
-    transition: width 0.5s ease;
-}
+        label {
+            display: block;
+            margin-bottom: 15px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
 
-/* Result Box */
-.result-box {
-    margin-top: 25px;
-    padding: 18px;
-    border-radius: 12px;
-    background: rgba(0,0,0,0.4);
-    font-size: 1.2rem;
-    font-weight: 600;
-    text-align: center;
-}
+        /* Interactive Buttons for Options */
+        .options {
+            display: grid;
+            gap: 10px;
+        }
 
-/* Icons Grid */
-.info-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
-    gap: 18px;
-    margin-top: 25px;
-}
-.info-card {
-    background: rgba(255,255,255,0.1);
-    padding: 18px;
-    border-radius: 15px;
-    text-align: center;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-    transition: 0.3s ease;
-}
-.info-card:hover {
-    transform: scale(1.04);
-}
-.info-card svg {
-    width: 40px;
-    height: 40px;
-    margin-bottom: 12px;
-    fill: #56ccf2;
-}
-.info-card p {
-    margin: 8px 0 0;
-    font-size: 0.98rem;
-    font-weight: 500;
-}
+        button.option-btn {
+            background: white;
+            border: 2px solid #e2e8f0;
+            padding: 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            text-align: left;
+            transition: all 0.2s;
+            color: var(--text-main);
+            width: 100%;
+        }
 
-</style>
+        button.option-btn:hover {
+            border-color: var(--primary);
+            background-color: #eff6ff;
+        }
+
+        button.option-btn:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+        }
+
+        /* Result Section */
+        #result-box {
+            display: none;
+            text-align: center;
+            padding-top: 20px;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .advice-box {
+            text-align: left;
+            background: #f1f5f9;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .restart-btn {
+            background-color: var(--text-main);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            margin-top: 20px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            height: 6px;
+            background-color: #e2e8f0;
+            border-radius: 3px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 </head>
-
 <body>
 
-<header>
-    <h1>Kidney Stone Detection</h1>
-    <p>Smart symptom analyzer for early detection of kidney stone likelihood</p>
-</header>
-
-<div class="container">
-
-    <div class="card">
-        <h2>Tell Us Your Symptoms</h2>
-        <label>Age</label>
-        <input type="number" id="age" placeholder="Enter your age">
-
-        <label>Gender</label>
-        <select id="gender">
-            <option value="">Select Gender</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-        </select>
-
-        <label>Severe Back or Side Pain?</label>
-        <select id="pain">
-            <option value="">Select</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-        </select>
-
-        <label>Blood in Urine?</label>
-        <select id="blood">
-            <option value="">Select</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-        </select>
-
-        <label>Nausea or Vomiting?</label>
-        <select id="nausea">
-            <option value="">Select</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-        </select>
-
-        <label>Burning Sensation While Urinating?</label>
-        <select id="burning">
-            <option value="">Select</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-        </select>
-
-        <button class="btn" onclick="runDetection()">Analyze Now</button>
-
-        <div class="progress-bar">
-            <div id="progress" class="progress"></div>
+    <div class="container">
+        <h1>Kidney Stone Assistant</h1>
+        
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
         </div>
 
-        <div id="resultText" class="result-box"></div>
-    </div>
+        <div class="disclaimer">
+            <strong>Note:</strong> This tool is for informational purposes only. It does not replace professional medical advice, diagnosis, or treatment. If you are in severe pain, please go to the ER.
+        </div>
 
+        <div id="quiz-area">
+            
+            <div class="question-step active" id="step1">
+                <label>Where is your pain located?</label>
+                <div class="options">
+                    <button class="option-btn" onclick="nextStep(1, 10)">Lower back or side (flank)</button>
+                    <button class="option-btn" onclick="nextStep(1, 8)">Groin or lower abdomen</button>
+                    <button class="option-btn" onclick="nextStep(1, 2)">Upper stomach / Chest</button>
+                    <button class="option-btn" onclick="nextStep(1, 0)">I have no pain</button>
+                </div>
+            </div>
 
-    <div class="card">
-        <h2>Tips & Prevention</h2>
-        <div class="info-grid">
-            <div class="info-card">
-                <svg viewBox="0 0 24 24">
-                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2
-                  5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5
-                  2.09C13.09 3.81 14.76 3 16.5 3 19.58
-                  3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55
-                  11.54L12 21.35z"/>
-                </svg>
-                <p>Stay Hydrated Regularly</p>
+            <div class="question-step" id="step2">
+                <label>How would you describe the pain?</label>
+                <div class="options">
+                    <button class="option-btn" onclick="nextStep(2, 10)">Sharp, stabbing, comes in waves</button>
+                    <button class="option-btn" onclick="nextStep(2, 5)">Dull, constant ache</button>
+                    <button class="option-btn" onclick="nextStep(2, 2)">Burning sensation only</button>
+                    <button class="option-btn" onclick="nextStep(2, 0)">No pain</button>
+                </div>
             </div>
-            <div class="info-card">
-                <svg viewBox="0 0 24 24">
-                  <path d="M3 3h18v2H3zm2 16h14v2H5zm-2-8h18v2H3z"/>
-                </svg>
-                <p>Reduce Salt & Oxalate Foods</p>
+
+            <div class="question-step" id="step3">
+                <label>Have you noticed any changes in your urine?</label>
+                <div class="options">
+                    <button class="option-btn" onclick="nextStep(3, 10)">Pink, red, or brown (blood)</button>
+                    <button class="option-btn" onclick="nextStep(3, 5)">Cloudy or foul-smelling</button>
+                    <button class="option-btn" onclick="nextStep(3, 8)">Frequent urge to go, but little comes out</button>
+                    <button class="option-btn" onclick="nextStep(3, 0)">Normal / Clear</button>
+                </div>
             </div>
-            <div class="info-card">
-                <svg viewBox="0 0 24 24">
-                  <path d="M12 2l1.5
-                  4.5h4.5l-3.75 2.75 1.5 4.5L12
-                  11.5l-3.75 2.75 1.5-4.5L5.25
-                  6.5h4.5z"/>
-                </svg>
-                <p>Maintain Healthy Lifestyle</p>
+
+            <div class="question-step" id="step4">
+                <label>Are you experiencing nausea or vomiting?</label>
+                <div class="options">
+                    <button class="option-btn" onclick="nextStep(4, 8)">Yes, I feel sick to my stomach</button>
+                    <button class="option-btn" onclick="nextStep(4, 0)">No</button>
+                </div>
             </div>
-            <div class="info-card">
-                <svg viewBox="0 0 24 24">
-                  <path d="M12 2L1 21h22L12
-                  2zm1 14.5h-2V17h2v-0.5zM11
-                  7h2v6h-2z"/>
-                </svg>
-                <p>See Doctor If Severe Pain</p>
+
+             <div class="question-step" id="step5">
+                <label>Do you have a fever or chills?</label>
+                <div class="options">
+                    <button class="option-btn" onclick="finishQuiz(10)">Yes (High Risk of Infection)</button>
+                    <button class="option-btn" onclick="finishQuiz(0)">No</button>
+                </div>
             </div>
         </div>
+
+        <div id="result-box">
+            <div class="score-circle" id="scoreCircle">--</div>
+            <h2 id="resultTitle">Assessment Complete</h2>
+            <div class="advice-box" id="adviceText">
+                </div>
+            <button class="restart-btn" onclick="location.reload()">Check Again</button>
+        </div>
+
     </div>
 
-</div>
+    <script>
+        /* INTERACTIVITY LOGIC
+           Calculates a 'risk score' based on user inputs.
+        */
+        
+        let currentStep = 1;
+        let totalScore = 0;
+        const totalSteps = 5;
 
-<script>
-function runDetection() {
-    const progress = document.getElementById("progress");
-    const resultText = document.getElementById("resultText");
-    resultText.innerText = "";
-    progress.style.width = "0%";
-
-    let age = document.getElementById("age").value;
-    let pain = document.getElementById("pain").value;
-    let blood = document.getElementById("blood").value;
-    let nausea = document.getElementById("nausea").value;
-    let burning = document.getElementById("burning").value;
-
-    if (!age || !pain || !blood || !nausea || !burning) {
-        resultText.innerText = "Please fill all fields.";
-        return;
-    }
-
-    let score = 0;
-    if (pain === "yes") score += 3;
-    if (blood === "yes") score += 3;
-    if (nausea === "yes") score += 2;
-    if (burning === "yes") score += 2;
-    if (age > 40) score += 1;
-
-    let percentage = Math.min(score*10, 100);
-    progress.style.width = percentage + "%";
-
-    setTimeout(() => {
-        if (score >= 8) {
-            resultText.innerText = "High chance of kidney stones detected. Immediate medical consultation advised.";
-        } else if (score >= 5) {
-            resultText.innerText = "Moderate risk of kidney stones. Consider clinical evaluation.";
-        } else {
-            resultText.innerText = "Low probable risk. Maintain hydration and monitor symptoms.";
+        function updateProgress() {
+            const percentage = ((currentStep - 1) / totalSteps) * 100;
+            document.getElementById('progressBar').style.width = percentage + "%";
         }
-    }, 500);
 
-}
-</script>
+        function nextStep(stepNumber, scoreToAdd) {
+            totalScore += scoreToAdd;
+            
+            // Hide current step
+            document.getElementById(`step${stepNumber}`).classList.remove('active');
+            
+            // Show next step
+            currentStep++;
+            updateProgress();
+            
+            const nextStepEl = document.getElementById(`step${currentStep}`);
+            if (nextStepEl) {
+                nextStepEl.classList.add('active');
+            }
+        }
 
+        function finishQuiz(scoreToAdd) {
+            totalScore += scoreToAdd;
+            updateProgress();
+            document.getElementById(`step5`).classList.remove('active');
+            showResults();
+        }
+
+        function showResults() {
+            const resultBox = document.getElementById('result-box');
+            const scoreCircle = document.getElementById('scoreCircle');
+            const resultTitle = document.getElementById('resultTitle');
+            const adviceText = document.getElementById('adviceText');
+            
+            resultBox.style.display = 'block';
+            document.getElementById('progressBar').style.width = "100%";
+
+            // Logic to determine output based on totalScore (Max approx 48)
+            let color = "";
+            let title = "";
+            let advice = "";
+
+            if (totalScore >= 25) {
+                // High Probability
+                color = "var(--danger)";
+                title = "High Likelihood";
+                scoreCircle.innerText = "High";
+                advice = `
+                    <p><strong>Your symptoms strongly match those of a kidney stone.</strong></p>
+                    <ul>
+                        <li>The combination of pain location and urine changes is significant.</li>
+                        <li>If you have a fever, <strong>seek immediate medical attention</strong> as this could indicate an infection.</li>
+                        <li>Drink water if you can tolerate it.</li>
+                    </ul>
+                    <p><em>Please consult a doctor or urologist immediately.</em></p>
+                `;
+            } else if (totalScore >= 10) {
+                // Moderate Probability
+                color = "var(--warning)";
+                title = "Possible Stones";
+                scoreCircle.innerText = "Med";
+                advice = `
+                    <p><strong>You have some symptoms consistent with kidney stones.</strong></p>
+                    <ul>
+                        <li>It could also be a urinary tract infection (UTI) or muscle strain.</li>
+                        <li>Monitor your hydration. Drink plenty of water.</li>
+                        <li>If pain worsens or you see blood in urine, see a doctor.</li>
+                    </ul>
+                `;
+            } else {
+                // Low Probability
+                color = "var(--success)";
+                title = "Low Likelihood";
+                scoreCircle.innerText = "Low";
+                advice = `
+                    <p><strong>Your symptoms do not currently suggest a kidney stone.</strong></p>
+                    <ul>
+                        <li>However, always listen to your body.</li>
+                        <li>Keep hydrated to prevent stones in the future.</li>
+                        <li>If you are worried, a check-up is never a bad idea.</li>
+                    </ul>
+                `;
+            }
+
+            scoreCircle.style.backgroundColor = color;
+            resultTitle.innerText = title;
+            adviceText.innerHTML = advice;
+        }
+    </script>
 </body>
 </html>
-```1
